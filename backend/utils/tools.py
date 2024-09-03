@@ -1,6 +1,7 @@
 import inspect
 import logging
 from typing import Awaitable, Callable, get_type_hints
+import json
 
 from apps.webui.models.tools import Tools
 from apps.webui.models.users import UserModel
@@ -162,3 +163,24 @@ def get_tools_specs(tools) -> list[dict]:
         )
 
     return specs
+
+def safe_json_loads(s: str) -> dict:
+    """
+    Safely load JSON string, handling common formatting issues.
+
+    Strips triple-backtick prefixes and suffixes, ```json prefix,
+    and any leading/trailing whitespace before parsing.
+
+    Args:
+        s: The input string containing JSON data.
+
+    Returns:
+        Parsed JSON data as a dictionary.
+
+    Raises:
+        json.JSONDecodeError: If the input is not valid JSON.
+    """
+    # Strip triple-backticks, ```json prefix, and whitespace
+    cleaned = s.strip().strip('`').lstrip('json').strip()
+
+    return json.loads(cleaned)

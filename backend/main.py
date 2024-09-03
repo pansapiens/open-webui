@@ -75,7 +75,7 @@ from utils.task import (
     moa_response_generation_template,
 )
 
-from utils.tools import get_tools
+from utils.tools import get_tools, safe_json_loads
 from utils.misc import (
     get_last_user_message,
     add_or_update_system_message,
@@ -412,7 +412,8 @@ async def chat_completion_tools_handler(
         if not content:
             return body, {}
 
-        result = json.loads(content)
+        #result = json.loads(content)
+        result = safe_json_loads(content)
 
         tool_function_name = result.get("name", None)
         if tool_function_name not in tools:
